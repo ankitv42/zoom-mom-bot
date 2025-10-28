@@ -1,0 +1,28 @@
+{
+  "summary": "The meeting provided a tutorial on how to test a webcam and microphone using Zoom. Participants learned the steps to join a test meeting and check their audio and video settings before an actual meeting.",
+  "key_points": [
+    "Participants need to have Zoom installed and an account to join a test meeting.",
+    "The test meeting can be accessed via zoom.com/test.",
+    "Users can select their camera and audio output options during the test.",
+    "The test includes a chime sound to confirm speaker functionality and microphone testing."
+  ],
+  "decisions": [],
+  "action_items": [
+    {
+      "task": "Test webcam and microphone using the Zoom test meeting feature.",
+      "owner": "Unassigned",
+      "deadline": "Not specified",
+      "priority": "high"
+    }
+  ],
+  "questions": [],
+  "next_steps": "Participants should perform the webcam and microphone test before their next scheduled Zoom meeting.",
+  "attendees": [],
+  "metadata": {
+    "generated_at": "2025-10-28T14:23:10.507320",
+    "transcript_file": "test_meeting_transcript.json",
+    "model_used": "gpt-4o-mini",
+    "transcript_length": 1458,
+    "duration": 90.87999725341797
+  }
+}
