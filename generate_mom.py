@@ -135,7 +135,8 @@ Return ONLY valid JSON, no additional text.
 
 if __name__ == "__main__":
     # Find transcript file
-    transcript_file = "test_meeting_transcript.json"
+    #transcript_file = "test_meeting_transcript.json"
+    transcript_file = "sample_9min_transcript.json"
     
     if not os.path.exists(transcript_file):
         print(f"❌ Error: {transcript_file} not found!")

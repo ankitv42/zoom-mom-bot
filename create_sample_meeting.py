@@ -1,0 +1,113 @@
+"""
+Create a realistic sample meeting transcript (9 minutes worth of content)
+"""
+
+import json
+
+def create_long_sample_transcript():
+    """Creates a detailed 9-minute meeting transcript"""
+    
+    # Simulating a 9-minute detailed meeting
+    conversation = [
+        ("00:00:15", "Sarah Johnson", "Good morning everyone! Thanks for joining. Today we're discussing our Q1 2025 marketing campaign strategy. We have a lot to cover, so let's dive right in. Mike, can you start with the content calendar update?"),
+        
+        ("00:00:45", "Mike Chen", "Sure, Sarah. I've been working on the content calendar for January through March. We're planning 12 blog posts, 24 social media campaigns, and 4 major email newsletters. The themes are focused on product launches, customer success stories, and thought leadership pieces. I'll need Lisa's team to coordinate the social media distribution."),
+        
+        ("01:15", "Lisa Park", "Thanks Mike. From the social media side, we're seeing great engagement on LinkedIn and Instagram. Our follower growth is up 23% quarter over quarter. However, I'm concerned about our Twitter engagement - it's dropped 15%. I'd like to propose reallocating some budget from Twitter to LinkedIn ads. What does everyone think?"),
+        
+        ("01:50", "Sarah Johnson", "That's a valid concern, Lisa. David, can you speak to the budget implications? We allocated $50,000 for Q1 social media advertising. Can we shift funds between platforms?"),
+        
+        ("02:10", "David Brown", "Yes, we have flexibility there. The $50K is allocated across platforms, but we can redistribute. However, I want to make sure we're not abandoning Twitter entirely. Maybe reduce it by 50% rather than eliminating it? That would free up about $8,000 to move to LinkedIn."),
+        
+        ("02:35", "Lisa Park", "That works for me. I'll create a revised media plan showing the reallocation. Sarah, when do you need that by?"),
+        
+        ("02:45", "Sarah Johnson", "Let's say Friday end of day. That gives us time to review before the budget meeting next Tuesday. Mike, back to you - what's the status on the product launch content?"),
+        
+        ("03:05", "Mike Chen", "The product launch is scheduled for February 15th. I've coordinated with the product team, and we have all the technical specs. I'm working with our design agency on the launch materials - website copy, press release, demo videos, and sales collateral. The challenge is the timeline. The agency needs 6 weeks for video production, which means we need to approve scripts by November 15th."),
+        
+        ("03:40", "Sarah Johnson", "November 15th is tight but doable. Can you share the draft scripts with the team by this Friday? We'll need to review and provide feedback quickly."),
+        
+        ("03:50", "Mike Chen", "Yes, I'll have drafts ready by Friday morning. I'll also include the storyboards so everyone can visualize the final videos."),
+        
+        ("04:05", "Lisa Park", "Mike, will these videos be in all formats for different platforms? We need vertical video for Instagram Stories, square for feed posts, and landscape for YouTube and LinkedIn."),
+        
+        ("04:20", "Mike Chen", "Good catch, Lisa. I'll make sure the agency delivers all three formats. It might add $3,000 to the production cost. David, is that within budget?"),
+        
+        ("04:30", "David Brown", "Let me check... Yes, we have contingency budget for that. But that's our buffer, so no more surprise costs after this, okay?"),
+        
+        ("04:45", "Sarah Johnson", "Agreed. Let's make sure we're buttoned up on all costs now. Speaking of which, what's the status on the influencer partnerships? Lisa, I believe you're leading that?"),
+        
+        ("05:05", "Lisa Park", "Yes. We've identified 5 potential influencers in our industry. Three have agreed to partnerships - pending contract negotiation. Their combined reach is about 500,000 followers. We're proposing a mix of sponsored posts and product reviews. Total cost would be around $15,000 for the quarter."),
+        
+        ("05:30", "David Brown", "That's within the influencer budget line. But I'll need the contracts by November 20th to process payments in this fiscal year."),
+        
+        ("05:40", "Lisa Park", "Noted. I'll push the contracts to be finalized by the 18th to give us buffer."),
+        
+        ("05:50", "Sarah Johnson", "Excellent. Now, I want to discuss measurement and KPIs. What metrics are we tracking for this campaign? Mike, let's start with content performance."),
+        
+        ("06:10", "Mike Chen", "For blog content, we're tracking page views, time on page, and conversion rate to newsletter signups. Target is 50,000 monthly page views and 2,000 new newsletter subscribers. For the product launch specifically, we want 10,000 landing page visits in the first week."),
+        
+        ("06:35", "Lisa Park", "On social media, we're measuring engagement rate, reach, and click-through to the website. Our targets are 5% engagement rate on Instagram, 3% on LinkedIn, and 100,000 total impressions per month."),
+        
+        ("06:55", "Sarah Johnson", "Good. I want weekly reports on these metrics. Can you both commit to that? I'll need them every Monday morning starting in January."),
+        
+        ("07:05", "Mike Chen", "Yes, I can do that."),
+        
+        ("07:08", "Lisa Park", "Same here. I'll set up an automated dashboard we can all access."),
+        
+        ("07:20", "Sarah Johnson", "Perfect. David, any budget concerns we haven't addressed?"),
+        
+        ("07:28", "David Brown", "Just one thing - the agency retainer comes up for renewal in January. It's currently $8,000 per month. They're proposing an increase to $9,500. Should we negotiate or look at other agencies?"),
+        
+        ("07:50", "Sarah Johnson", "That's a 19% increase. Mike, are you satisfied with their work quality and turnaround times?"),
+        
+        ("08:05", "Mike Chen", "Mostly yes. Quality is excellent. Turnaround is sometimes slow - they missed two deadlines last quarter. But finding a new agency would set us back at least 6 weeks for onboarding."),
+        
+        ("08:25", "Sarah Johnson", "Okay, here's my decision. Mike, you'll negotiate with them. Push for $9,000 per month with a performance guarantee - no missed deadlines. If they can't commit to that, we start looking at alternatives in December. Sound reasonable?"),
+        
+        ("08:45", "Mike Chen", "Yes, I'll reach out to them this week."),
+        
+        ("08:50", "Sarah Johnson", "Great. Let me summarize our action items. Mike - draft scripts by Friday, negotiate with agency. Lisa - revised media plan by Friday, finalize influencer contracts by November 18th. David - process influencer payments by November 20th. Everyone - weekly metrics reports starting January. Any questions?"),
+        
+        ("09:15", "Lisa Park", "No questions from me."),
+        
+        ("09:17", "Mike Chen", "All clear."),
+        
+        ("09:19", "David Brown", "Good to go."),
+        
+        ("09:22", "Sarah Johnson", "Excellent. Thanks everyone. Let's make Q1 our best quarter yet. Meeting adjourned.")
+    ]
+    
+    # Create full text
+    full_text = " ".join([text for _, _, text in conversation])
+    
+    # Create transcript in Whisper format
+    whisper_format = {
+        "text": full_text,
+        "language": "en",
+        "duration": 540,
+        "segments": [
+            {
+                "start": 0,
+                "end": 540,
+                "text": full_text
+            }
+        ]
+    }
+    
+    # Save transcript
+    with open('sample_9min_transcript.json', 'w') as f:
+        json.dump(whisper_format, f, indent=2)
+    
+    print("✅ Created sample 9-minute meeting transcript!")
+    print(f"   📝 {len(conversation)} conversation segments")
+    print(f"   💬 ~{len(full_text.split())} words")
+    print(f"\nFile created: sample_9min_transcript.json")
+    
+    return whisper_format
+
+if __name__ == "__main__":
+    print("🎬 Creating Sample 9-Minute Meeting Transcript...\n")
+    create_long_sample_transcript()
+    print("\n✅ Ready to test! Run: python3 process_long_meeting.py")
+    print("   When prompted, enter: sample_9min_transcript.json")

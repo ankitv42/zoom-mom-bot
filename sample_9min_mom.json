@@ -1,0 +1,70 @@
+{
+  "summary": "The meeting focused on the Q1 2025 marketing campaign strategy, including updates on the content calendar, budget reallocations for social media, and influencer partnerships. Key metrics for measuring campaign success were also discussed.",
+  "key_points": [
+    "Content calendar includes 12 blog posts, 24 social media campaigns, and 4 email newsletters.",
+    "Proposal to reallocate budget from Twitter to LinkedIn due to engagement concerns.",
+    "Product launch scheduled for February 15th with a tight timeline for video production.",
+    "Five potential influencers identified, with three agreeing to partnerships pending contract negotiations.",
+    "Weekly metrics reports will be established starting in January."
+  ],
+  "decisions": [
+    {
+      "decision": "Negotiate with the agency for $9,000 per month with a performance guarantee.",
+      "made_by": "Team",
+      "timestamp": "Not specified"
+    }
+  ],
+  "action_items": [
+    {
+      "task": "Draft scripts for product launch content.",
+      "owner": "Mike",
+      "deadline": "Friday end of day",
+      "priority": "high"
+    },
+    {
+      "task": "Create a revised media plan showing the reallocation of budget.",
+      "owner": "Lisa",
+      "deadline": "Friday end of day",
+      "priority": "high"
+    },
+    {
+      "task": "Finalize influencer contracts.",
+      "owner": "Lisa",
+      "deadline": "November 18th",
+      "priority": "high"
+    },
+    {
+      "task": "Process influencer payments.",
+      "owner": "David",
+      "deadline": "November 20th",
+      "priority": "high"
+    },
+    {
+      "task": "Set up automated dashboard for weekly metrics.",
+      "owner": "Mike",
+      "deadline": "Not specified",
+      "priority": "medium"
+    },
+    {
+      "task": "Negotiate with the agency regarding retainer increase.",
+      "owner": "Mike",
+      "deadline": "Not specified",
+      "priority": "high"
+    }
+  ],
+  "questions": [],
+  "next_steps": "Ensure all action items are completed by their respective deadlines and prepare for the budget meeting next Tuesday.",
+  "attendees": [
+    "Sarah",
+    "Mike",
+    "Lisa",
+    "David"
+  ],
+  "metadata": {
+    "generated_at": "2025-11-02T15:01:16.145604",
+    "transcript_file": "sample_9min_transcript.json",
+    "model_used": "gpt-4o-mini",
+    "transcript_length": 5413,
+    "duration": 540
+  }
+}
