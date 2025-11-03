@@ -1,0 +1,39 @@
+{
+  "summary": "The meeting focused on how to effectively record Zoom sessions during training or webinars while managing participant visibility. The speaker demonstrated the use of spotlight and speaker view to ensure only relevant speakers are recorded.",
+  "key_points": [
+    "Demonstrated how to switch from gallery view to speaker view on Zoom.",
+    "Explained the process of spotlighting participants during a recording.",
+    "Highlighted the importance of ensuring only comfortable participants are visible when recording.",
+    "Provided a step-by-step guide on managing participant audio settings."
+  ],
+  "decisions": [
+    {
+      "decision": "Keep the recording on speaker view and spotlight the main speaker.",
+      "made_by": "Team",
+      "timestamp": "Not specified"
+    }
+  ],
+  "action_items": [
+    {
+      "task": "Ensure all participants are comfortable with being recorded before switching to gallery view.",
+      "owner": "Unassigned",
+      "deadline": "Not specified",
+      "priority": "high"
+    }
+  ],
+  "questions": [],
+  "next_steps": "Implement the discussed recording techniques in future training sessions.",
+  "attendees": [
+    "Lea",
+    "Shay",
+    "Gregory",
+    "Eric"
+  ],
+  "metadata": {
+    "generated_at": "2025-11-03T14:02:24.340482",
+    "transcript_file": "transcripts/videoplayback_transcript.json",
+    "model_used": "gpt-4o-mini",
+    "transcript_length": 3196,
+    "duration": 203.0800018310547
+  }
+}
