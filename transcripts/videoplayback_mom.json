@@ -1,10 +1,10 @@
 {
-  "summary": "The meeting focused on how to effectively record Zoom sessions during training or webinars while managing participant visibility. The speaker demonstrated the use of spotlight and speaker view to ensure only relevant speakers are recorded.",
+  "summary": "The meeting focused on how to effectively record training sessions or webinars on Zoom while managing participant visibility. The speaker demonstrated the use of spotlight and speaker view to ensure a professional recording experience.",
   "key_points": [
-    "Demonstrated how to switch from gallery view to speaker view on Zoom.",
-    "Explained the process of spotlighting participants during a recording.",
-    "Highlighted the importance of ensuring only comfortable participants are visible when recording.",
-    "Provided a step-by-step guide on managing participant audio settings."
+    "Use spotlight to highlight the main speaker during recordings.",
+    "Switch to speaker view to ensure only the active speaker is visible.",
+    "Avoid gallery view unless all participants are comfortable being recorded.",
+    "Participants can be spotlighted when they are speaking alongside the main speaker."
   ],
   "decisions": [
     {
@@ -15,14 +15,20 @@
   ],
   "action_items": [
     {
-      "task": "Ensure all participants are comfortable with being recorded before switching to gallery view.",
+      "task": "Demonstrate the process of spotlighting participants during a session.",
+      "owner": "Lea",
+      "deadline": "Not specified",
+      "priority": "medium"
+    },
+    {
+      "task": "Ensure all participants are aware of the recording settings before the next session.",
       "owner": "Unassigned",
       "deadline": "Not specified",
       "priority": "high"
     }
   ],
   "questions": [],
-  "next_steps": "Implement the discussed recording techniques in future training sessions.",
+  "next_steps": "Implement the discussed recording techniques in upcoming training sessions.",
   "attendees": [
     "Lea",
     "Shay",
@@ -30,10 +36,10 @@
     "Eric"
   ],
   "metadata": {
-    "generated_at": "2025-11-03T14:02:24.340482",
+    "generated_at": "2025-11-08T06:58:59.135125",
     "transcript_file": "transcripts/videoplayback_transcript.json",
     "model_used": "gpt-4o-mini",
-    "transcript_length": 3196,
+    "transcript_length": 3192,
     "duration": 203.0800018310547
   }
 }

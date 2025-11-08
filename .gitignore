@@ -4,4 +4,11 @@ __pycache__/
 *.pyc
 .DS_Store
 *.mp4
+*.mp3
 *.wav
+*.webm
+*.m4a
+uploads/
+transcripts/
+moms/
+.streamlit/secrets.toml
