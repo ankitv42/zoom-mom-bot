@@ -7,10 +7,8 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import json
 
-# Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def transcribe_audio(audio_file_path):
@@ -30,49 +28,72 @@ def transcribe_audio(audio_file_path):
     try:
         # Open audio file
         with open(audio_file_path, "rb") as audio_file:
-            # Call Whisper API
+            # Call Whisper API - use simple format first
             transcript = client.audio.transcriptions.create(
                 model="whisper-1",
                 file=audio_file,
-                response_format="verbose_json",  # Get timestamps
-                language="en"  # Optional: specify language
+                response_format="json"  # Changed from verbose_json to json
             )
         
         print("✅ Transcription complete!")
         
-        # Extract main data
+        # Handle response - it might be a dict or an object
+        if hasattr(transcript, 'text'):
+            # It's an object
+            transcript_text = transcript.text
+            duration = getattr(transcript, 'duration', 0)
+        elif isinstance(transcript, dict):
+            # It's a dict
+            transcript_text = transcript.get('text', '')
+            duration = transcript.get('duration', 0)
+        else:
+            # Fallback
+            transcript_text = str(transcript)
+            duration = 0
+        
+        # Extract data
         result = {
-            "text": transcript.text,
-            "language": getattr(transcript, "language", "unknown"),
-            "duration": getattr(transcript, "duration", 0),
+            "text": transcript_text,
+            "language": "en",
+            "duration": duration,
             "segments": []
         }
         
-        # Add segments with timestamps
-        if hasattr(transcript, 'segments') and transcript.segments:
+        # Try to add segments if available
+        if hasattr(transcript, 'segments'):
             for segment in transcript.segments:
-                result["segments"].append({
-                    "start": segment.start,
-                    "end": segment.end,
-                    "text": segment.text
-                })
+                if isinstance(segment, dict):
+                    result["segments"].append({
+                        "start": segment.get('start', 0),
+                        "end": segment.get('end', 0),
+                        "text": segment.get('text', '')
+                    })
+                elif hasattr(segment, 'start'):
+                    result["segments"].append({
+                        "start": segment.start,
+                        "end": segment.end,
+                        "text": segment.text
+                    })
         
-        # Save to JSON file
-        output_file = (
-            audio_file_path.replace('.mp3', '_transcript.json')
-                          .replace('.webm', '_transcript.json')
-                          .replace('.wav', '_transcript.json')
-                          .replace('.mp4', '_transcript.json')
-        )
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(result, f, indent=2, ensure_ascii=False)
+        # If no segments, create one for the whole text
+        if not result["segments"]:
+            result["segments"].append({
+                "start": 0,
+                "end": duration,
+                "text": transcript_text
+            })
+        
+        # Save to file
+        output_file = audio_file_path.replace('.mp3', '_transcript.json').replace('.webm', '_transcript.json').replace('.wav', '_transcript.json').replace('.m4a', '_transcript.json')
+        with open(output_file, 'w') as f:
+            json.dump(result, f, indent=2)
         
         print(f"💾 Saved transcript to: {output_file}")
         
-        # Print quick summary
+        # Print summary
         print(f"\n📊 Summary:")
-        print(f"   Duration: {result['duration']:.1f} seconds")
-        print(f"   Language: {result['language']}")
+        if duration > 0:
+            print(f"   Duration: {duration:.1f} seconds")
         print(f"   Word count: ~{len(result['text'].split())} words")
         print(f"\n📝 First 200 characters:")
         print(f"   {result['text'][:200]}...")
@@ -81,11 +102,12 @@ def transcribe_audio(audio_file_path):
         
     except Exception as e:
         print(f"❌ Error during transcription: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
-
 if __name__ == "__main__":
-    # Transcribe the audio file
+    # Test with sample audio file
     audio_file = "test_meeting.mp3"
     
     if not os.path.exists(audio_file):
