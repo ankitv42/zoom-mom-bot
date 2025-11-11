@@ -116,10 +116,14 @@ def process_audio_file(file_path, meeting_title):
         status_text = st.empty()
         
         status_text.text("Sending audio to Whisper API...")
-        transcript_result = transcribe_audio(file_path)
-        
-        if not transcript_result:
-            results['error'] = "Transcription failed"
+        try:
+            transcript_result = transcribe_audio(file_path)
+            
+            if not transcript_result:
+                results['error'] = "Transcription failed after 3 attempts. OpenAI API might be temporarily down. Please try again in a few minutes."
+                return results
+        except Exception as e:
+            results['error'] = f"Transcription error: {str(e)}"
             return results
         
         progress_bar.progress(33)
