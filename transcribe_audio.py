@@ -84,7 +84,16 @@ def transcribe_audio(audio_file_path):
             })
         
         # Save to file
-        output_file = audio_file_path.replace('.mp3', '_transcript.json').replace('.webm', '_transcript.json').replace('.wav', '_transcript.json').replace('.m4a', '_transcript.json')
+        #output_file = audio_file_path.replace('.mp3', '_transcript.json').replace('.webm', '_transcript.json').replace('.wav', '_transcript.json').replace('.m4a', '_transcript.json')
+        output_file = audio_file_path.replace('.mp3', '_transcript.json')\
+            .replace('.webm', '_transcript.json')\
+            .replace('.wav', '_transcript.json')\
+            .replace('.m4a', '_transcript.json')\
+            .replace('.mp4', '_transcript.json')\
+            .replace('.avi', '_transcript.json')\
+            .replace('.mov', '_transcript.json')
+        
+        
         with open(output_file, 'w') as f:
             json.dump(result, f, indent=2)
         

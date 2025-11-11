@@ -256,9 +256,10 @@ def main():
         2. **Wait** for AI to transcribe & analyze
         3. **Get** professional Minutes of Meeting
         4. **Email** to participants
-        
+
         ### 📊 Supported Formats
-        - MP3, WAV, M4A, WebM
+        - Audio: MP3, WAV, M4A, WebM
+        - Video: MP4, AVI, MOV
         - Any meeting platform
         - Max 2 hours duration
         
@@ -289,9 +290,9 @@ def main():
         
         with col1:
             uploaded_file = st.file_uploader(
-                "Choose audio file",
-                type=['mp3', 'wav', 'm4a', 'webm'],
-                help="Upload your meeting recording (MP3, WAV, M4A, or WebM)"
+                "Choose audio or video file",
+                type=['mp3', 'wav', 'm4a', 'webm', 'mp4', 'avi', 'mov'],
+                help="Upload your meeting recording (MP3, MP4, WAV, M4A, WebM, AVI, MOV)"
             )
         
         with col2:
