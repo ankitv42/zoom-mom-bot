@@ -1,6 +1,6 @@
 """
 Transcribe audio/video file using OpenAI Whisper API with retry logic
-Whisper API accepts both audio and video directly - no conversion needed!
+Converts video to audio first to reduce file size
 """
 
 import os
@@ -9,10 +9,75 @@ from dotenv import load_dotenv
 import json
 import time
 from pathlib import Path
+import subprocess
+import tempfile
 
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+def convert_video_to_audio(video_path):
+    """
+    Convert video file to MP3 audio using ffmpeg
+    
+    Args:
+        video_path: Path to video file
+    
+    Returns:
+        str: Path to converted audio file, or None if conversion fails
+    """
+    print("🎬 Video file detected - extracting audio...")
+    
+    # Check if ffmpeg is available
+    try:
+        subprocess.run(['ffmpeg', '-version'], capture_output=True, check=True)
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        print("❌ Error: ffmpeg not found!")
+        print("   Please install ffmpeg:")
+        print("   - Mac: brew install ffmpeg")
+        print("   - Ubuntu: sudo apt-get install ffmpeg")
+        print("   - Windows: Download from https://ffmpeg.org/download.html")
+        return None
+    
+    # Create temporary audio file
+    video_name = Path(video_path).stem
+    temp_audio = f"{video_name}_audio.mp3"
+    
+    try:
+        print(f"   Converting {Path(video_path).name} to MP3...")
+        
+        # Extract audio with compression
+        # -vn: no video, -acodec: audio codec, -ar: audio sample rate, -ab: audio bitrate
+        result = subprocess.run([
+            'ffmpeg',
+            '-i', video_path,
+            '-vn',  # No video
+            '-acodec', 'libmp3lame',  # MP3 codec
+            '-ar', '16000',  # 16kHz sample rate (Whisper optimal)
+            '-ab', '32k',  # 32kbps bitrate (good quality, small size)
+            '-y',  # Overwrite output file
+            temp_audio
+        ], capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            print(f"❌ ffmpeg error: {result.stderr}")
+            return None
+        
+        # Check output file size
+        audio_size_mb = os.path.getsize(temp_audio) / (1024 * 1024)
+        print(f"✅ Audio extracted: {audio_size_mb:.1f}MB")
+        
+        if audio_size_mb > 25:
+            print(f"⚠️  Warning: Extracted audio is still {audio_size_mb:.1f}MB")
+            print("   This exceeds Whisper's 25MB limit.")
+            print("   Try recording shorter meetings or use lower quality settings.")
+            return None
+        
+        return temp_audio
+        
+    except Exception as e:
+        print(f"❌ Conversion error: {e}")
+        return None
 
 def transcribe_audio(audio_file_path, max_retries=3):
     """
@@ -30,29 +95,43 @@ def transcribe_audio(audio_file_path, max_retries=3):
     
     # Get file extension
     ext = Path(audio_file_path).suffix.lower()
-    if ext in ['.mp4', '.mov', '.avi']:
-        print("🎬 Video file detected - Whisper will extract audio automatically...")
+    video_extensions = ['.mp4', '.mov', '.avi', '.mkv', '.flv', '.wmv']
+    
+    # Convert video to audio if needed
+    temp_audio_file = None
+    if ext in video_extensions:
+        temp_audio_file = convert_video_to_audio(audio_file_path)
+        if not temp_audio_file:
+            print("❌ Failed to convert video to audio")
+            return None
+        audio_file_path = temp_audio_file
+        print(f"✅ Using converted audio: {audio_file_path}")
     
     print("⏳ This may take a minute...")
     
     # Check file size (Whisper has 25MB limit)
     file_size_mb = os.path.getsize(audio_file_path) / (1024 * 1024)
+    print(f"📦 File size: {file_size_mb:.1f}MB")
+    
     if file_size_mb > 25:
-        print(f"⚠️  Warning: File is {file_size_mb:.1f}MB. Whisper API limit is 25MB.")
-        print("   Consider compressing the file first.")
+        print(f"❌ Error: File is {file_size_mb:.1f}MB. Whisper API limit is 25MB.")
+        print("   Try compressing the file or recording shorter segments.")
+        if temp_audio_file and os.path.exists(temp_audio_file):
+            os.remove(temp_audio_file)
         return None
     
+    result = None
     for attempt in range(max_retries):
         try:
             # Open file
             with open(audio_file_path, "rb") as audio_file:
                 print(f"   Attempt {attempt + 1}/{max_retries}...")
                 
-                # Whisper API accepts both audio AND video files directly!
+                # Call Whisper API
                 transcript = client.audio.transcriptions.create(
                     model="whisper-1",
                     file=audio_file,
-                    response_format="json"
+                    response_format="verbose_json"  # Get more details
                 )
             
             print("✅ Transcription complete!")
@@ -74,12 +153,12 @@ def transcribe_audio(audio_file_path, max_retries=3):
                     print(f"   Retrying in {2 ** attempt} seconds...")
                     time.sleep(2 ** attempt)
                     continue
-                return None
+                break
             
             # Extract data
             result = {
                 "text": transcript_text,
-                "language": "en",
+                "language": getattr(transcript, 'language', 'en'),
                 "duration": duration,
                 "segments": []
             }
@@ -108,24 +187,15 @@ def transcribe_audio(audio_file_path, max_retries=3):
                     "text": transcript_text
                 })
             
-            # Save to file
-            base_name = str(Path(audio_file_path).stem)
-            output_file = base_name + '_transcript.json'
-            
-            with open(output_file, 'w') as f:
-                json.dump(result, f, indent=2)
-            
-            print(f"💾 Saved transcript to: {output_file}")
-            
             # Print summary
             print(f"\n📊 Summary:")
             if duration > 0:
-                print(f"   Duration: {duration:.1f} seconds")
+                print(f"   Duration: {duration:.1f} seconds ({duration/60:.1f} minutes)")
             print(f"   Word count: ~{len(result['text'].split())} words")
             print(f"\n📝 First 200 characters:")
             print(f"   {result['text'][:200]}...")
             
-            return result
+            break  # Success, exit retry loop
             
         except Exception as e:
             error_msg = str(e)
@@ -146,16 +216,30 @@ def transcribe_audio(audio_file_path, max_retries=3):
                     continue
             elif "413" in error_msg or "file too large" in error_msg.lower():
                 print("   File is too large for Whisper API (max 25MB).")
-                return None
+                break
             
             if attempt == max_retries - 1:
                 print("\n💥 All retry attempts failed!")
                 import traceback
                 traceback.print_exc()
-                return None
+    
+    # Clean up temporary audio file
+    if temp_audio_file and os.path.exists(temp_audio_file):
+        try:
+            os.remove(temp_audio_file)
+            print(f"🧹 Cleaned up temporary file: {temp_audio_file}")
+        except:
+            pass
+    
+    return result
 
 if __name__ == "__main__":
-    audio_file = "test_meeting.mp3"
+    import sys
+    
+    if len(sys.argv) > 1:
+        audio_file = sys.argv[1]
+    else:
+        audio_file = "test_meeting.mp3"
     
     if not os.path.exists(audio_file):
         print(f"❌ Error: {audio_file} not found!")
@@ -168,5 +252,14 @@ if __name__ == "__main__":
         
         if result:
             print("\n✅ Transcription successful!")
+            
+            # Save to file
+            base_name = str(Path(audio_file).stem)
+            output_file = base_name + '_transcript.json'
+            
+            with open(output_file, 'w') as f:
+                json.dump(result, f, indent=2)
+            
+            print(f"💾 Saved transcript to: {output_file}")
         else:
             print("\n❌ Transcription failed")
