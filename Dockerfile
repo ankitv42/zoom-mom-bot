@@ -22,4 +22,5 @@ RUN mkdir -p uploads transcripts moms
 EXPOSE 8501
 
 # ✅ Neutralize the bad environment variable before launching Streamlit
-CMD ["bash", "-c", "unset STREAMLIT_SERVER_PORT && streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"]
+#CMD ["bash", "-c", "unset STREAMLIT_SERVER_PORT && streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"]
+CMD ["bash", "-c", "if [ \"${STREAMLIT_SERVER_PORT:-}\" = '$PORT' ]; then unset STREAMLIT_SERVER_PORT; fi && streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"]
