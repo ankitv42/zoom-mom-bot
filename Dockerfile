@@ -21,6 +21,5 @@ RUN mkdir -p uploads transcripts moms
 # Let Railway provide PORT dynamically
 EXPOSE 8501
 
-# ✅ Use exec form of CMD so $PORT expands properly
-#CMD ["bash", "-c", "streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"]
-CMD ["streamlit", "run", "app.py"]
+# ✅ Neutralize the bad environment variable before launching Streamlit
+CMD ["bash", "-c", "unset STREAMLIT_SERVER_PORT && streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"]
