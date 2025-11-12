@@ -2,6 +2,9 @@
 MOM Bot - Streamlit Web Interface
 Main application file
 """
+# Set Streamlit port + address from environment
+os.environ["STREAMLIT_SERVER_PORT"] = str(os.getenv("PORT", "8501"))
+os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
 
 import streamlit as st
 import os
