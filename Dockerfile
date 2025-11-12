@@ -26,9 +26,5 @@ ENV PORT=8501
 
 EXPOSE $PORT
 
-# Start command
-CMD streamlit run app.py \
-    --server.port=$PORT \
-    --server.address=0.0.0.0 \
-    --server.headless=true \
-    --browser.gatherUsageStats=false
+# Use shell form to allow variable expansion
+CMD sh -c "streamlit run app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"
