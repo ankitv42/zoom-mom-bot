@@ -6,9 +6,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Verify ffmpeg
-RUN ffmpeg -version
-
 WORKDIR /app
 
 # Copy requirements and install
@@ -21,10 +18,8 @@ COPY . .
 # Create directories
 RUN mkdir -p uploads transcripts moms
 
-# Railway sets PORT env variable
-ENV PORT=8501
+# Let Railway provide PORT dynamically
+EXPOSE 8501
 
-EXPOSE $PORT
-
-# Use shell form to allow variable expansion
-CMD sh -c "streamlit run app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"
+# ✅ Use exec form of CMD so $PORT expands properly
+CMD ["bash", "-c", "streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true --browser.gatherUsageStats=false"]
