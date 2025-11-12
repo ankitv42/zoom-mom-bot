@@ -31,7 +31,7 @@ def transcribe_audio(audio_file_path, max_retries=3):
     # Get file extension
     ext = Path(audio_file_path).suffix.lower()
     if ext in ['.mp4', '.mov', '.avi']:
-        print("🎬 Video file detected - extracting audio automatically...")
+        print("🎬 Video file detected - Whisper will extract audio automatically...")
     
     print("⏳ This may take a minute...")
     
@@ -57,17 +57,14 @@ def transcribe_audio(audio_file_path, max_retries=3):
             
             print("✅ Transcription complete!")
             
-            # Handle response - it might be a dict or an object
+            # Handle response
             if hasattr(transcript, 'text'):
-                # It's an object
                 transcript_text = transcript.text
                 duration = getattr(transcript, 'duration', 0)
             elif isinstance(transcript, dict):
-                # It's a dict
                 transcript_text = transcript.get('text', '')
                 duration = transcript.get('duration', 0)
             else:
-                # Fallback
                 transcript_text = str(transcript)
                 duration = 0
             
@@ -112,7 +109,8 @@ def transcribe_audio(audio_file_path, max_retries=3):
                 })
             
             # Save to file
-            output_file = str(Path(audio_file_path).with_suffix('')) + '_transcript.json'
+            base_name = str(Path(audio_file_path).stem)
+            output_file = base_name + '_transcript.json'
             
             with open(output_file, 'w') as f:
                 json.dump(result, f, indent=2)
@@ -133,16 +131,16 @@ def transcribe_audio(audio_file_path, max_retries=3):
             error_msg = str(e)
             print(f"❌ Error during transcription (attempt {attempt + 1}/{max_retries}): {error_msg}")
             
-            # Check if it's a rate limit or server error
+            # Check error type
             if "500" in error_msg or "503" in error_msg:
                 if attempt < max_retries - 1:
-                    wait_time = 2 ** attempt  # Exponential backoff: 1s, 2s, 4s
+                    wait_time = 2 ** attempt
                     print(f"   OpenAI server error. Retrying in {wait_time} seconds...")
                     time.sleep(wait_time)
                     continue
             elif "429" in error_msg:
                 if attempt < max_retries - 1:
-                    wait_time = 5 * (attempt + 1)  # 5s, 10s, 15s
+                    wait_time = 5 * (attempt + 1)
                     print(f"   Rate limit hit. Retrying in {wait_time} seconds...")
                     time.sleep(wait_time)
                     continue
@@ -150,7 +148,6 @@ def transcribe_audio(audio_file_path, max_retries=3):
                 print("   File is too large for Whisper API (max 25MB).")
                 return None
             
-            # If last attempt, show full traceback
             if attempt == max_retries - 1:
                 print("\n💥 All retry attempts failed!")
                 import traceback
@@ -158,7 +155,6 @@ def transcribe_audio(audio_file_path, max_retries=3):
                 return None
 
 if __name__ == "__main__":
-    # Test with sample audio file
     audio_file = "test_meeting.mp3"
     
     if not os.path.exists(audio_file):
@@ -172,6 +168,5 @@ if __name__ == "__main__":
         
         if result:
             print("\n✅ Transcription successful!")
-            print("Next step: Run generate_mom.py to create Minutes of Meeting")
         else:
-            print("\n❌ Transcription failed after all retries")
+            print("\n❌ Transcription failed")
