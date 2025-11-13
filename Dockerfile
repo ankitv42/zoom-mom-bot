@@ -22,4 +22,6 @@ RUN mkdir -p uploads transcripts moms
 EXPOSE 8501
 
 # Fix: Unset problematic env var and run Streamlit properly
-CMD ["sh", "-c", "unset STREAMLIT_SERVER_PORT && streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true"]
+#CMD ["sh", "-c", "unset STREAMLIT_SERVER_PORT && streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true"]
+#CMD ["bash", "-c", "unset STREAMLIT_SERVER_PORT; streamlit run app.py --server.port=${PORT:-8501} --server.address=0.0.0.0 --server.headless=true"]
+CMD ["bash", "-c", "PORT=${PORT:-8501} streamlit run app.py"]
