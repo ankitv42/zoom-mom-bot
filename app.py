@@ -2,19 +2,6 @@
 MOM Bot - Streamlit Web Interface
 Main application file
 """
-import os
-
-# 🔥 Force Streamlit to use a real integer port, not literal "$PORT"
-port = int(os.getenv("PORT", 8501))
-
-# Remove any bad value inherited from the environment
-if os.getenv("STREAMLIT_SERVER_PORT") == "$PORT":
-    del os.environ["STREAMLIT_SERVER_PORT"]
-
-# Explicitly set correct Streamlit server settings
-os.environ["STREAMLIT_SERVER_PORT"] = str(port)
-os.environ["STREAMLIT_SERVER_ADDRESS"] = "0.0.0.0"
-
 import streamlit as st
 
 import os
